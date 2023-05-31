@@ -1,8 +1,11 @@
 package es.uca.iw.farmacia.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
@@ -14,6 +17,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
@@ -96,7 +100,14 @@ public class MainLayout extends AppLayout {
 
         H1 appName = new H1("Farmacia");
         appName.addClassNames(Margin.Vertical.MEDIUM, Margin.End.AUTO, FontSize.LARGE);
-        layout.add(appName);
+        Button b = new Button(appName);
+        b.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        b.getStyle().set("margin-right", "570px"); // Establece un margen izquierdo de 20px
+        b.addClickListener(e -> {
+        	 UI.getCurrent().navigate("/");
+        });
+        
+        layout.add(b);
 
         Optional<User> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
@@ -124,7 +135,17 @@ public class MainLayout extends AppLayout {
             userName.getSubMenu().addItem("Cerrar sesión", e -> {
                 authenticatedUser.logout();
             });
-
+            
+            Button button = new Button("Registrar usuario");
+            
+            button.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+            button.getStyle().set("margin-right", "500px"); // Establece un margen izquierdo de 20px
+            
+            button.addClickListener(e -> {
+           	 UI.getCurrent().navigate("/registro");
+           });
+            
+            layout.add(button);
             layout.add(userMenu);
         } else {
             Anchor loginLink = new Anchor("login", "Iniciar sesión");
