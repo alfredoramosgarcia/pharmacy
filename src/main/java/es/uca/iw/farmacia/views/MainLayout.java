@@ -138,7 +138,7 @@ public class MainLayout extends AppLayout {
             div.getElement().getStyle().set("align-items", "center");
             div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
             userName.add(div);
-            userName.getSubMenu().addItem("Cerrar sesión", e -> {
+            userName.getSubMenu().addItem("Cerrar sesion", e -> {
                 authenticatedUser.logout();
             });
             
@@ -165,7 +165,7 @@ public class MainLayout extends AppLayout {
             layout.add(button);
             layout.add(userMenu);
         } else {
-            Anchor loginLink = new Anchor("login", "Iniciar sesión");
+            Anchor loginLink = new Anchor("login", "Iniciar sesion");
             layout.add(loginLink);
         }
 
