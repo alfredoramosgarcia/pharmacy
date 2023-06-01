@@ -14,47 +14,39 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 
 import es.uca.iw.farmacia.data.entity.Medicamento;
+import es.uca.iw.farmacia.data.service.MedicamentoService;
 import es.uca.iw.farmacia.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
 @PageTitle("FARMACIA")
 @Route(value = "medicamentos", layout = MainLayout.class)
 @PermitAll
 public class MedicamentosView extends VerticalLayout {
-	
-	@PersistenceContext
-	private EntityManager entityManager;
 
-	private Grid<Medicamento> grid;
+    private MedicamentoService medicamentoService;
 
-	public MedicamentosView(EntityManager entityManager) {
-		this.entityManager = entityManager;
+    private Grid<Medicamento> grid;
 
-		// Crear un grid para mostrar los medicamentos
-		grid = new Grid<>(Medicamento.class);
+    public MedicamentosView(MedicamentoService medicamentoService) {
+    	
+    	this.medicamentoService = medicamentoService;
 
-		// Obtener los medicamentos desde la base de datos
-		List<Medicamento> medicamentos = obtenerMedicamentosDesdeBaseDeDatos();
-		
-		System.out.print(medicamentos.isEmpty());
+        // Crear un grid para mostrar los medicamentos
+        grid = new Grid<>(Medicamento.class);
 
-		// Agregar los medicamentos al grid
-		grid.setItems(medicamentos);
+        // Obtener los medicamentos desde el servicio
+        List<Medicamento> medicamentos = medicamentoService.obtenerTodosLosMedicamentos();
+        System.out.print(medicamentos.isEmpty());
 
-		// Configurar las columnas del grid
-		grid.setColumns("id", "codigoNacional", "nombreComercial", "composicion", "categoria", "formaFarmaceutica", "stockDisponible");
+        // Agregar los medicamentos al grid
+        grid.setItems(medicamentos);
 
-		// Agregar el grid al layout
-		add(grid);
-	}
+        // Configurar las columnas del grid
+        grid.setColumns("id", "codigoNacional", "nombreComercial", "composicion", "categoria", "formaFarmaceutica", "stockDisponible", "precioPorUnidad");
 
-	private List<Medicamento> obtenerMedicamentosDesdeBaseDeDatos() {
-		String jpql = "SELECT m FROM Medicamento m";
-		jakarta.persistence.TypedQuery<Medicamento> query = entityManager.createQuery(jpql, Medicamento.class);
-	
-		return query.getResultList();
-	}
+        // Agregar el grid al layout
+        add(grid);
+    }
 }

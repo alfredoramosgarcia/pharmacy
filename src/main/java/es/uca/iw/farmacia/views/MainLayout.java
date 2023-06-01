@@ -16,11 +16,16 @@ import com.vaadin.flow.component.html.Nav;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.VaadinRequest;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
+import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.BoxSizing;
 import com.vaadin.flow.theme.lumo.LumoUtility.Display;
@@ -41,6 +46,7 @@ import es.uca.iw.farmacia.security.AuthenticatedUser;
 import es.uca.iw.farmacia.views.caja.CajaView;
 import es.uca.iw.farmacia.views.medicamentos.MedicamentosView;
 import java.io.ByteArrayInputStream;
+import java.util.Locale;
 import java.util.Optional;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
@@ -139,11 +145,22 @@ public class MainLayout extends AppLayout {
             Button button = new Button("Registrar usuario");
             
             button.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-            button.getStyle().set("margin-right", "500px"); // Establece un margen izquierdo de 20px
+            button.getStyle().set("margin-right", "440px"); // Establece un margen izquierdo de 20px
+            button.getStyle().set("margin-left", "10px"); // Establece un margen izquierdo de 20px
             
             button.addClickListener(e -> {
            	 UI.getCurrent().navigate("/registro");
            });
+          
+            
+            Button themeToggleButton = new Button();
+            themeToggleButton.setIcon(new Icon(VaadinIcon.MOON));
+            themeToggleButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+            themeToggleButton.addClickListener(e -> toggleTheme(themeToggleButton));
+            layout.add(themeToggleButton);
+
+
+
             
             layout.add(button);
             layout.add(userMenu);
@@ -179,5 +196,21 @@ public class MainLayout extends AppLayout {
 
         };
     }
+    
+    
+    
+    
+    private void toggleTheme(Button themeToggleButton) {
+        if (themeToggleButton.getIcon().equals(new Icon(VaadinIcon.MOON))) {
+            themeToggleButton.setIcon(new Icon(VaadinIcon.LIGHTBULB));
+            getUI().ifPresent(ui -> ui.getElement().executeJs("document.documentElement.setAttribute('theme', '"
+                    + Lumo.LIGHT + "')"));
+        } else {
+            themeToggleButton.setIcon(new Icon(VaadinIcon.MOON));
+            getUI().ifPresent(ui -> ui.getElement().executeJs("document.documentElement.setAttribute('theme', '"
+                    + Lumo.DARK + "')"));
+        }
+    }
+
 
 }

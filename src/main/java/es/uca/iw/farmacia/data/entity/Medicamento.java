@@ -2,13 +2,12 @@ package es.uca.iw.farmacia.data.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table (name = "medicamentos")
+@Table(name = "medicamentos")
 public class Medicamento {
 
     @Id
@@ -20,19 +19,26 @@ public class Medicamento {
     private String categoria;
     private String formaFarmaceutica;
     private int stockDisponible;
+    private double precioPorUnidad;
 
     // Constructores, getters y setters
 
     public Medicamento() {
     }
 
-    public Medicamento(String codigoNacional, String nombreComercial, String composicion, String categoria, String formaFarmaceutica, int stockDisponible) {
+    public Medicamento(String codigoNacional, String nombreComercial, String composicion, String categoria,
+            String formaFarmaceutica, int stockDisponible, double precioPorUnidad) {
         this.codigoNacional = codigoNacional;
         this.nombreComercial = nombreComercial;
         this.composicion = composicion;
         this.categoria = categoria;
         this.formaFarmaceutica = formaFarmaceutica;
         this.stockDisponible = stockDisponible;
+        this.precioPorUnidad = precioPorUnidad;
+    }
+
+    public Medicamento(Medicamento medicamentoSeleccionado) {
+        // TODO Auto-generated constructor stub
     }
 
     public Long getId() {
@@ -89,5 +95,13 @@ public class Medicamento {
 
     public void setStockDisponible(int stockDisponible) {
         this.stockDisponible = stockDisponible;
+    }
+
+    public double getPrecioPorUnidad() {
+        return precioPorUnidad;
+    }
+
+    public void setPrecioPorUnidad(double precioPorUnidad) {
+        this.precioPorUnidad = precioPorUnidad;
     }
 }

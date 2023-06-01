@@ -3,13 +3,13 @@ package es.uca.iw.farmacia;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
-import es.uca.iw.farmacia.data.service.UserRepository;
 import javax.sql.DataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
 import org.springframework.boot.autoconfigure.sql.init.SqlInitializationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * The entry point of the Spring Boot application.
@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
  *
  */
 @SpringBootApplication
+@EnableJpaRepositories
 @Theme(value = "farmacia", variant = Lumo.DARK)
 public class Application implements AppShellConfigurator {
 
@@ -26,7 +27,7 @@ public class Application implements AppShellConfigurator {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
+    /*@Bean
     SqlDataSourceScriptDatabaseInitializer dataSourceScriptDatabaseInitializer(DataSource dataSource,
             SqlInitializationProperties properties, UserRepository repository) {
         // This bean ensures the database is only initialized when empty
@@ -37,7 +38,7 @@ public class Application implements AppShellConfigurator {
                     return super.initializeDatabase();
                 }
                 return false;
-            }
+            } 
         };
-    }
+    }*/
 }
