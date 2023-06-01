@@ -25,7 +25,7 @@ public class RegistroView extends Div {
             // Crear los campos de formulario
             TextField nombreField = new TextField("Nombre");
             TextField emailField = new TextField("Email");
-            PasswordField passwordField = new PasswordField("Contraseña");
+            PasswordField passwordField = new PasswordField("Password");
 
             // Crear el botón de registro
             Button registroButton = new Button("Registrarse");
