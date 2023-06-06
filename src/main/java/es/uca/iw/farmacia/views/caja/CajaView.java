@@ -1,14 +1,15 @@
 package es.uca.iw.farmacia.views.caja;
 
 import com.vaadin.flow.component.button.Button;
+
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+
 import es.uca.iw.farmacia.data.entity.Medicamento;
 import es.uca.iw.farmacia.views.MainLayout;
 import jakarta.annotation.security.PermitAll;

@@ -3,26 +3,21 @@ package es.uca.iw.farmacia.views.medicamentos;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
+
 import java.util.List;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 
 import es.uca.iw.farmacia.data.entity.Medicamento;
 import es.uca.iw.farmacia.data.service.MedicamentoService;
 import es.uca.iw.farmacia.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
 @PageTitle("FARMACIA")
 @Route(value = "medicamentos", layout = MainLayout.class)
 @PermitAll
+@AnonymousAllowed
 public class MedicamentosView extends VerticalLayout {
 
     private MedicamentoService medicamentoService;
