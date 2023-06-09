@@ -1,7 +1,9 @@
 package es.uca.iw.farmacia.views.detalleMedicamento;
 
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -53,13 +55,28 @@ public class DetalleMedicamentoView extends VerticalLayout implements HasUrlPara
     }
 
     private void guardarMedicamento() {
+        int stockDisponible;
+        double precioPorUnidad;
+
+        try {
+            stockDisponible = Integer.parseInt(stockDisponibleField.getValue());
+            precioPorUnidad = Double.parseDouble(precioUnidadField.getValue());
+        } catch (NumberFormatException e) {
+        	mostrarNotificacionError("Los valores de Stock Disponible y Precio por Unidad deben ser numéricos");
+            return;
+        }
+
+        if (stockDisponible < 0 || precioPorUnidad < 0) {
+            mostrarNotificacionError("El Stock Disponible y el Precio por Unidad deben ser mayores o iguales a 0");
+            return;
+        }
+
         medicamento.setCodigoNacional(codigoNacionalField.getValue());
         medicamento.setNombreComercial(nombreComercialField.getValue());
         medicamento.setComposicion(composicionField.getValue());
         medicamento.setCategoria(categoriaField.getValue());
-        medicamento.setStockDisponible(Integer.parseInt(stockDisponibleField.getValue()));
-        medicamento.setPrecioPorUnidad(Double.parseDouble(precioUnidadField.getValue()));
-        
+        medicamento.setStockDisponible(stockDisponible);
+        medicamento.setPrecioPorUnidad(precioPorUnidad);
 
         medicamentoService.guardarMedicamento(medicamento);
         Notification.show("Medicamento guardado correctamente", 3000, Notification.Position.MIDDLE);
@@ -67,6 +84,15 @@ public class DetalleMedicamentoView extends VerticalLayout implements HasUrlPara
         UI.getCurrent().navigate(MedicamentosView.class);
     }
 
+    private void mostrarNotificacionError(String mensaje) {
+        Dialog dialog = new Dialog();
+        dialog.add(new Text(mensaje));
+        dialog.open();
+    }
+
+    private void mostrarNotificacionExito(String mensaje) {
+        Notification.show(mensaje, 3000, Notification.Position.MIDDLE);
+    }
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long id) {
         if (id == null) {

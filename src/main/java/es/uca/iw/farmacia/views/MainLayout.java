@@ -20,6 +20,9 @@ import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
@@ -140,29 +143,10 @@ public class MainLayout extends AppLayout {
             userName.getSubMenu().addItem("Cerrar sesion", e -> {
                 authenticatedUser.logout();
             });
-            
-            Button button = new Button("Registrar usuario");
-            
-            button.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-            button.getStyle().set("margin-right", "440px"); // Establece un margen izquierdo de 20px
-            button.getStyle().set("margin-left", "10px"); // Establece un margen izquierdo de 20px
-            
-            button.addClickListener(e -> {
-           	 UI.getCurrent().navigate("/registro");
-           });
-          
-            
-            Button themeToggleButton = new Button();
-            themeToggleButton.setIcon(new Icon(VaadinIcon.MOON));
-            themeToggleButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-            themeToggleButton.addClickListener(e -> toggleTheme(themeToggleButton));
-            layout.add(themeToggleButton);
-
-
-
-            
-            layout.add(button);
-            layout.add(userMenu);
+         
+            VerticalLayout filtroLayout = new VerticalLayout(userMenu);
+            filtroLayout.setHorizontalComponentAlignment(Alignment.END, userMenu);
+            layout.add(filtroLayout);
         } else {
             Anchor loginLink = new Anchor("login", "Iniciar sesion");
             layout.add(loginLink);
@@ -199,20 +183,7 @@ public class MainLayout extends AppLayout {
         };
     }
     
-    
-    
-    
-    private void toggleTheme(Button themeToggleButton) {
-        if (themeToggleButton.getIcon().equals(new Icon(VaadinIcon.MOON))) {
-            themeToggleButton.setIcon(new Icon(VaadinIcon.LIGHTBULB));
-            getUI().ifPresent(ui -> ui.getElement().executeJs("document.documentElement.setAttribute('theme', '"
-                    + Lumo.LIGHT + "')"));
-        } else {
-            themeToggleButton.setIcon(new Icon(VaadinIcon.MOON));
-            getUI().ifPresent(ui -> ui.getElement().executeJs("document.documentElement.setAttribute('theme', '"
-                    + Lumo.DARK + "')"));
-        }
-    }
+  
 
 
 }

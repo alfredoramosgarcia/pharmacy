@@ -1,7 +1,10 @@
 package es.uca.iw.farmacia.views.caja;
 
+import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -29,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("serial")
-@PageTitle("Caja Registradora")
+@PageTitle("FARMACIA")
 @Route(value = "caja", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PermitAll
@@ -100,7 +103,9 @@ public class CajaView extends VerticalLayout {
                 listaCompras.add(compra);
             }
 
-            actualizarStockMedicamento(medicamento, cantidad);
+            if(cantidad <= medicamento.getStockDisponible()) actualizarStockMedicamento(medicamento, cantidad);
+            else { mostrarNotificacionError("No hay stock suficiente para la compra");
+            return;}
             actualizarPrecioTotal(); // Update the total price
             compraGrid.getDataProvider().refreshAll();
         }
@@ -178,13 +183,19 @@ public class CajaView extends VerticalLayout {
                 listaCompras.clear(); // Clear the list of purchases
                 actualizarPrecioTotal(); // Reset the total price
                 compraGrid.getDataProvider().refreshAll(); // Refresh the grid
-            } else {
-                // Mostrar un mensaje de error al usuario indicando que no hay suficiente stock disponible
-                // Puedes usar una notificación de Vaadin para esto
-                Notification.show("No hay suficiente stock disponible para completar la compra.", 3000, Notification.Position.MIDDLE);
-            }
-        }
+            }}
+    }
+    
+    private void mostrarNotificacionError(String mensaje) {
+        Dialog dialog = new Dialog();
+        dialog.add(new Text(mensaje));
+        dialog.open();
     }
 
+    private void mostrarNotificacionExito(String mensaje) {
+        Notification.show(mensaje, 3000, Notification.Position.MIDDLE);
+    }
+
+    
     
 }

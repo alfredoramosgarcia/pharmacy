@@ -8,6 +8,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import es.uca.iw.farmacia.views.detalleMedicamento.DetalleMedicamentoView;
 import jakarta.annotation.security.PermitAll;
 
 @SuppressWarnings("serial")
+@PageTitle("FARMACIA")
 @Route(value = "medicamentos", layout = MainLayout.class)
 @PermitAll
 public class MedicamentosView extends VerticalLayout {

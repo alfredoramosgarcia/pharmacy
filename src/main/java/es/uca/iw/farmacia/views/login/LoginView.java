@@ -12,7 +12,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import es.uca.iw.farmacia.security.AuthenticatedUser;
 
 @AnonymousAllowed
-@PageTitle("Login")
+@PageTitle("FARMACIA")
 @Route(value = "login")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
