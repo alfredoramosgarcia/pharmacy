@@ -3,22 +3,28 @@ package es.uca.iw.farmacia.views.caja;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
+import es.uca.iw.farmacia.data.entity.Compra;
 import es.uca.iw.farmacia.data.entity.Medicamento;
 import es.uca.iw.farmacia.data.service.MedicamentoService;
 import es.uca.iw.farmacia.views.MainLayout;
 
 import jakarta.annotation.security.PermitAll;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("serial")
 @PageTitle("Caja Registradora")
@@ -27,52 +33,104 @@ import java.util.List;
 @PermitAll
 public class CajaView extends VerticalLayout {
 
-    private Grid<Medicamento> medicamentoGrid;
-    private List<Medicamento> listaCaja;
-    private Binder<Medicamento> binder;
+    private Grid<Compra> compraGrid;
+    private List<Compra> listaCompras;
+    private Binder<Compra> binder;
     private MedicamentoService medicamentoService;
     private double precioTotal;
+    private Button precioTotalLabel; // Store the total price label reference
 
-    public CajaView() {
-        listaCaja = new ArrayList<>();
-        binder = new Binder<>(Medicamento.class);
-        precioTotal = 0.0; // Inicializar el precio total en 0.0
+    public CajaView(MedicamentoService medicamentoService) {
+        this.medicamentoService = medicamentoService;
+        listaCompras = new ArrayList<>();
+        binder = new Binder<>(Compra.class);
+        precioTotal = 0.0; // Initialize the total price to 0.0
 
-        medicamentoGrid = new Grid<>(Medicamento.class);
-        medicamentoGrid.setColumns("codigoNacional", "nombreComercial", "composicion", "categoria", "formaFarmaceutica", "stockDisponible" , "precioPorUnidad");
-        medicamentoGrid.setItems(listaCaja);
+        compraGrid = new Grid<>(Compra.class);
+        compraGrid.setColumns("nombreComercial", "cantidad", "precioUnidad");
+        compraGrid.setItems(listaCompras);
+
+        ComboBox<Medicamento> medicamentoComboBox = new ComboBox<>("Medicamento");
+        medicamentoComboBox.setItemLabelGenerator(Medicamento::getNombreComercial);
+        medicamentoComboBox.setItems(medicamentoService.obtenerTodosLosMedicamentos());
 
         IntegerField cantidadField = new IntegerField("Cantidad");
         Button agregarButton = new Button("Agregar a la caja");
-        agregarButton.addClickListener(e -> agregarMedicamento(cantidadField.getValue()));
+        agregarButton.addClickListener(e -> agregarMedicamento(medicamentoComboBox.getValue(), cantidadField.getValue()));
 
-        add(medicamentoGrid, cantidadField, agregarButton);
+        Button eliminarButton = new Button("Eliminar");
+        eliminarButton.addClickListener(e -> eliminarMedicamento());
+
+        HorizontalLayout filtroLayout = new HorizontalLayout(medicamentoComboBox, cantidadField, agregarButton, eliminarButton);
+        filtroLayout.setVerticalComponentAlignment(Alignment.END, medicamentoComboBox);
+        filtroLayout.setAlignSelf(Alignment.END, cantidadField);
+        filtroLayout.setAlignSelf(Alignment.END, agregarButton);
+        filtroLayout.setAlignSelf(Alignment.END, eliminarButton);
+        add(filtroLayout, compraGrid);
+
+        actualizarPrecioTotal(); // Initialize the total price label
     }
 
-    private void agregarMedicamento(Integer cantidad) {
-        Medicamento medicamentoSeleccionado = medicamentoGrid.getSelectedItems().stream().findFirst().orElse(null);
-        if (medicamentoSeleccionado != null && cantidad != null && cantidad > 0) {
-            Medicamento medicamentoCaja = new Medicamento(medicamentoSeleccionado);
-            medicamentoCaja.setStockDisponible(cantidad);
-            listaCaja.add(medicamentoCaja);
-            actualizarStockMedicamento(medicamentoSeleccionado, cantidad);
-            actualizarPrecioTotal(); // Actualizar el precio total
-            medicamentoGrid.getDataProvider().refreshAll();
+    private void agregarMedicamento(Medicamento medicamento, Integer cantidad) {
+        if (medicamento != null && cantidad != null && cantidad > 0) {
+            Compra compraExistente = listaCompras.stream()
+                    .filter(c -> c.getMedicamento().equals(medicamento))
+                    .findFirst()
+                    .orElse(null);
+
+            if (compraExistente != null) {
+                compraExistente.setCantidad(compraExistente.getCantidad() + cantidad);
+            } else {
+                Compra compra = new Compra();
+                compra.setMedicamento(medicamento);
+                compra.setCantidad(cantidad);
+                compra.setFechaCompra(new Date());
+                compra.setPrecioUnidad(medicamento.getPrecioPorUnidad());
+                listaCompras.add(compra);
+            }
+
+            actualizarStockMedicamento(medicamento, cantidad);
+            actualizarPrecioTotal(); // Update the total price
+            compraGrid.getDataProvider().refreshAll();
+        }
+    }
+    
+    private void actualizarStockMedicamento(Medicamento medicamento, Integer cantidad) {
+        medicamento.setStockDisponible(medicamento.getStockDisponible() - cantidad);
+        // Update the medication's stock in the database using the service
+        medicamentoService.guardarMedicamento(medicamento);
+    }
+
+    private void eliminarMedicamento() {
+        Compra selectedCompra = compraGrid.asSingleSelect().getValue();
+        if (selectedCompra != null) {
+            listaCompras.remove(selectedCompra);
+            actualizarStockMedicamento(selectedCompra.getMedicamento(), -selectedCompra.getCantidad());
+            actualizarPrecioTotal(); // Update the total price
+            compraGrid.getDataProvider().refreshAll();
         }
     }
 
-    private void actualizarStockMedicamento(Medicamento medicamento, Integer cantidad) {
-        medicamento.setStockDisponible(medicamento.getStockDisponible() - cantidad);
-    }
-
     private void actualizarPrecioTotal() {
-        precioTotal = listaCaja.stream()
-                .mapToDouble(medicamento -> medicamento.getPrecioPorUnidad() * medicamento.getStockDisponible())
+        precioTotal = listaCompras.stream()
+                .mapToDouble(compra -> compra.getCantidad() * compra.getPrecioUnidad())
                 .sum();
-        Button precioTotalLabel = null;
-		// Actualizar la visualización del precio total en la interfaz de usuario
-        // (puede ser un componente Label o cualquier otro)
-        // por ejemplo:
-        precioTotalLabel.setText("Precio Total: " + precioTotal + "€");
+
+        // Format the price value
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00", symbols);
+        String formattedPrecioTotal = decimalFormat.format(precioTotal);
+
+        // Remove the previous total price label if it exists
+        if (precioTotalLabel != null) {
+            remove(precioTotalLabel);
+        }
+
+        // Create a new total price label with the updated value
+        precioTotalLabel = new Button();
+        precioTotalLabel.setText("Precio Total: " + formattedPrecioTotal + "€");
+        add(precioTotalLabel);
     }
 }

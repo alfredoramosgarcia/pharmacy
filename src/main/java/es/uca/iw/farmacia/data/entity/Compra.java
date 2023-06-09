@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,21 +19,27 @@ public class Compra {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private Long medicamentoId;
+
+  @ManyToOne
+  @JoinColumn(name = "medicamento_id")
+  private Medicamento medicamento;
+  
   private Date fechaCompra;
   private int cantidad;
   private double precio;
   private double precioUnidad;  
+  private String nombreComercial;
   public Compra() {
     // Default constructor required by JPA
   }
 
-  public Compra(Long medicamentoId, Date fechaCompra, int cantidad, double precioUnidad) {
-    this.medicamentoId = medicamentoId;
+  public Compra(Long medicamentoId, Date fechaCompra, int cantidad, double precioUnidad, Medicamento medicamento) {
     this.fechaCompra = fechaCompra;
     this.cantidad = cantidad;
     this.precioUnidad = precioUnidad;
     this.precio = cantidad * precioUnidad;
+    this.medicamento = medicamento;
+    this.nombreComercial = getNombreComercial();
   }
 
   public Long getId() { 
@@ -40,14 +48,6 @@ public class Compra {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public Long getMedicamentoId() {
-    return medicamentoId;
-  }
-
-  public void setMedicamentoId(Long medicamentoId) {
-    this.medicamentoId = medicamentoId;
   }
 
   public Date getFechaCompra() {
@@ -81,4 +81,20 @@ public class Compra {
   public double getPrecioUnidad() {
 	  return precioUnidad;
   }
+
+  public void setMedicamento(Medicamento medicamento) {
+	    this.medicamento = medicamento;
+	    this.nombreComercial = (medicamento != null) ? medicamento.getNombreComercial() : null;
+	}
+
+
+public String getNombreComercial() {
+	return medicamento.getNombreComercial();
+}
+
+public Medicamento getMedicamento() {
+	// TODO Auto-generated method stub
+	return this.medicamento;
+}
+
 }
