@@ -1,6 +1,8 @@
 package es.uca.iw.farmacia.views;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.AttachEvent;
+
 
 
 import com.vaadin.flow.component.UI;
@@ -20,6 +22,7 @@ import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
@@ -144,19 +147,14 @@ public class MainLayout extends AppLayout {
             Button button = new Button("Registrar usuario");
             
             button.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-            button.getStyle().set("margin-right", "440px"); // Establece un margen izquierdo de 20px
+            button.getStyle().set("margin-right", "490px"); // Establece un margen izquierdo de 20px
             button.getStyle().set("margin-left", "10px"); // Establece un margen izquierdo de 20px
             
             button.addClickListener(e -> {
            	 UI.getCurrent().navigate("/registro");
            });
           
-            
-            Button themeToggleButton = new Button();
-            themeToggleButton.setIcon(new Icon(VaadinIcon.MOON));
-            themeToggleButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-            themeToggleButton.addClickListener(e -> toggleTheme(themeToggleButton));
-            layout.add(themeToggleButton);
+          
 
 
 
@@ -198,21 +196,5 @@ public class MainLayout extends AppLayout {
 
         };
     }
-    
-    
-    
-    
-    private void toggleTheme(Button themeToggleButton) {
-        if (themeToggleButton.getIcon().equals(new Icon(VaadinIcon.MOON))) {
-            themeToggleButton.setIcon(new Icon(VaadinIcon.LIGHTBULB));
-            getUI().ifPresent(ui -> ui.getElement().executeJs("document.documentElement.setAttribute('theme', '"
-                    + Lumo.LIGHT + "')"));
-        } else {
-            themeToggleButton.setIcon(new Icon(VaadinIcon.MOON));
-            getUI().ifPresent(ui -> ui.getElement().executeJs("document.documentElement.setAttribute('theme', '"
-                    + Lumo.DARK + "')"));
-        }
-    }
-
 
 }
