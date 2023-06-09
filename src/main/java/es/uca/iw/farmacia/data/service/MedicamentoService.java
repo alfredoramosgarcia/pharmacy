@@ -33,4 +33,8 @@ public class MedicamentoService {
         Optional<Medicamento> optionalMedicamento = medicamentoRepository.findById(id);
         return optionalMedicamento.orElse(null);
     }
+    
+    public List<Medicamento> buscarPorNombre(String nombre) {
+        return medicamentoRepository.findByNombreComercialContainingIgnoreCase(nombre);
+    }
 }

@@ -41,6 +41,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 import es.uca.iw.farmacia.data.entity.User;
 import es.uca.iw.farmacia.security.AuthenticatedUser;
 import es.uca.iw.farmacia.views.caja.CajaView;
+import es.uca.iw.farmacia.views.compras.ComprasView;
 import es.uca.iw.farmacia.views.medicamentos.MedicamentosView;
 import java.io.ByteArrayInputStream;
 import java.util.Locale;
@@ -191,7 +192,7 @@ public class MainLayout extends AppLayout {
 
                 new MenuItemInfo("Medicamentos", LineAwesomeIcon.PILLS_SOLID.create(), MedicamentosView.class), //
                 
-                new MenuItemInfo("Compras", new Icon(VaadinIcon.CART), MedicamentosView.class), //
+                new MenuItemInfo("Compras", new Icon(VaadinIcon.CART), ComprasView.class), //
 
 
         };
