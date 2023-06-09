@@ -1,6 +1,7 @@
 package es.uca.iw.farmacia.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import es.uca.iw.farmacia.data.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;

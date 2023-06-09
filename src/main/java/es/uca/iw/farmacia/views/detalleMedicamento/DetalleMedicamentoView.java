@@ -1,6 +1,7 @@
 package es.uca.iw.farmacia.views.detalleMedicamento;
 
 import com.vaadin.flow.component.Text;
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -30,8 +31,6 @@ public class DetalleMedicamentoView extends VerticalLayout implements HasUrlPara
     private TextField categoriaField;
     private TextField stockDisponibleField;
     private TextField precioUnidadField;
-    private int stock;
-    private double precio;
 
     public DetalleMedicamentoView(MedicamentoService medicamentoService) {
         this.medicamentoService = medicamentoService;
@@ -95,9 +94,7 @@ public class DetalleMedicamentoView extends VerticalLayout implements HasUrlPara
         dialog.open();
     }
 
-    private void mostrarNotificacionExito(String mensaje) {
-        Notification.show(mensaje, 3000, Notification.Position.MIDDLE);
-    }
+    
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long id) {
         if (id == null) {

@@ -1,6 +1,8 @@
 package es.uca.iw.farmacia.views.agregarMedicamento;
 
 import com.vaadin.flow.component.UI;
+
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
@@ -15,10 +17,6 @@ import es.uca.iw.farmacia.data.entity.Medicamento;
 import es.uca.iw.farmacia.data.service.MedicamentoService;
 import es.uca.iw.farmacia.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
 
 @SuppressWarnings("serial")
 @PageTitle("FARMACIA")
@@ -38,13 +36,10 @@ public class AgregarMedicamentoView extends FormLayout {
     private final TextField precioPorUnidad = new TextField("Precio por Unidad");
 
     private final Button guardarButton = new Button("Guardar");
-    private MedicamentoService medicamentoService;
-    private Medicamento medicamento;
 
     private final Binder<Medicamento> binder = new Binder<>(Medicamento.class);
 
     public AgregarMedicamentoView(MedicamentoService medicamentoService) {
-        this.medicamentoService = medicamentoService;
 
         binder.forField(stockDisponible)
                 .withConverter(new StringToIntegerConverter("Ingrese un número válido"))
@@ -73,17 +68,6 @@ public class AgregarMedicamentoView extends FormLayout {
             }
         });
 
-    }
-
-    private void guardarMedicamento() {
-        try {
-            binder.writeBean(medicamento);
-            medicamentoService.guardarMedicamento(medicamento);
-            Notification.show("Medicamento guardado correctamente");
-            // Reiniciar el formulario o realizar otras acciones necesarias después de guardar el medicamento
-        } catch (ValidationException ex) {
-            Notification.show("Error al guardar el medicamento. Verifique los datos ingresados.", 3000, Notification.Position.MIDDLE);
-        }
     }
 
 }

@@ -3,6 +3,7 @@ package es.uca.iw.farmacia.views;
 import com.vaadin.flow.component.Component;
 
 
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -20,13 +21,11 @@ import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
-import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.BoxSizing;
 import com.vaadin.flow.theme.lumo.LumoUtility.Display;
@@ -48,13 +47,13 @@ import es.uca.iw.farmacia.views.caja.CajaView;
 import es.uca.iw.farmacia.views.compras.CompraView;
 import es.uca.iw.farmacia.views.medicamentos.MedicamentosView;
 import java.io.ByteArrayInputStream;
-import java.util.Locale;
 import java.util.Optional;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
+@SuppressWarnings("serial")
 public class MainLayout extends AppLayout {
 
     /**

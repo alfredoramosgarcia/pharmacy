@@ -16,7 +16,8 @@ import es.uca.iw.farmacia.security.AuthenticatedUser;
 @Route(value = "login")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
-    private final AuthenticatedUser authenticatedUser;
+    private static final long serialVersionUID = 1L;
+	private final AuthenticatedUser authenticatedUser;
 
     public LoginView(AuthenticatedUser authenticatedUser) {
         this.authenticatedUser = authenticatedUser;

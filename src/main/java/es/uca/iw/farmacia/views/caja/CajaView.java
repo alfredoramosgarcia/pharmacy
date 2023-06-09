@@ -1,17 +1,16 @@
 package es.uca.iw.farmacia.views.caja;
 
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
+
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -40,7 +39,6 @@ public class CajaView extends VerticalLayout {
 
     private Grid<Compra> compraGrid;
     private List<Compra> listaCompras;
-    private Binder<Compra> binder;
     private MedicamentoService medicamentoService;
     private CompraService compraService;
     private double precioTotal;
@@ -50,11 +48,10 @@ public class CajaView extends VerticalLayout {
     	this.compraService = compraService;
         this.medicamentoService = medicamentoService;
         listaCompras = new ArrayList<>();
-        binder = new Binder<>(Compra.class);
         precioTotal = 0.0; // Initialize the total price to 0.0
 
         compraGrid = new Grid<>(Compra.class);
-        compraGrid.setColumns("nombreComercial", "cantidad", "precioUnidad");
+        compraGrid.setColumns("nombreComercial", "cantidad");
         compraGrid.addColumn(medicamento -> medicamento.getPrecioUnidad() + " €")
                 .setHeader("Precio Unidad");
         compraGrid.setItems(listaCompras);
@@ -64,11 +61,12 @@ public class CajaView extends VerticalLayout {
         medicamentoComboBox.setItems(medicamentoService.obtenerTodosLosMedicamentos());
 
         IntegerField cantidadField = new IntegerField("Cantidad");
-        Button agregarButton = new Button("Agregar a la caja");
+        Button agregarButton = new Button("Agregar");
         agregarButton.addClickListener(e -> agregarMedicamento(medicamentoComboBox.getValue(), cantidadField.getValue()));
 
         Button eliminarButton = new Button("Eliminar");
         eliminarButton.addClickListener(e -> eliminarMedicamento());
+        eliminarButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         HorizontalLayout filtroLayout = new HorizontalLayout(medicamentoComboBox, cantidadField, agregarButton, eliminarButton);
         filtroLayout.setVerticalComponentAlignment(Alignment.END, medicamentoComboBox);
@@ -170,7 +168,44 @@ public class CajaView extends VerticalLayout {
                 double precioTotal = listaCompras.stream()
                         .mapToDouble(compra -> compra.getCantidad() * compra.getPrecioUnidad())
                         .sum();
+             // Create a dialog to confirm the purchase
+                Dialog dialog = new Dialog();
+                dialog.setCloseOnEsc(false);
+                dialog.setCloseOnOutsideClick(false);
 
+                VerticalLayout dialogLayout = new VerticalLayout();
+                dialogLayout.setSpacing(true);
+                dialogLayout.setPadding(true);
+
+                Text confirmText = new Text("¿Desea confirmar la compra?");
+                dialogLayout.add(confirmText);
+
+                HorizontalLayout buttonsLayout = new HorizontalLayout();
+                buttonsLayout.setSpacing(true);
+
+                Button confirmButton = new Button("Confirmar");
+                confirmButton.addClickListener(e -> {
+                    for (Compra compra : listaCompras) {
+                        compraService.guardarCompra(compra);
+                    }
+
+                    listaCompras.clear();
+                    actualizarPrecioTotal(); // Reset the total price
+                    compraGrid.getDataProvider().refreshAll();
+
+                    dialog.close();
+                    mostrarNotificacionExito("Compra realizada con éxito");
+                });
+
+                Button cancelButton = new Button("Cancelar");
+                cancelButton.addClickListener(e -> dialog.close());
+
+                buttonsLayout.add(confirmButton, cancelButton);
+                dialogLayout.add(buttonsLayout);
+
+                dialog.add(dialogLayout);
+                dialog.open();
+            }
                 for (Compra compra : listaCompras) {
                     Medicamento medicamento = compra.getMedicamento();
                     medicamento.setStockDisponible(medicamento.getStockDisponible() - compra.getCantidad());
@@ -180,13 +215,12 @@ public class CajaView extends VerticalLayout {
                     compra.setCantidad(compra.getCantidad());
                     compra.setMedicamento(medicamento);
                     compraService.guardarCompra(compra);
-                    mostrarNotificacionExito("Compra realizada correctamente");
                 }
 
                 listaCompras.clear(); // Clear the list of purchases
                 actualizarPrecioTotal(); // Reset the total price
                 compraGrid.getDataProvider().refreshAll(); // Refresh the grid
-            }}
+            }
     }
     
     private void mostrarNotificacionError(String mensaje) {

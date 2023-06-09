@@ -1,6 +1,7 @@
 package es.uca.iw.farmacia.data.service;
 
 import es.uca.iw.farmacia.data.entity.User;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

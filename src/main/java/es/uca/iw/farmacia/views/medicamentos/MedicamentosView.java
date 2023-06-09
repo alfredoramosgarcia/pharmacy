@@ -1,6 +1,7 @@
 package es.uca.iw.farmacia.views.medicamentos;
 
 import com.vaadin.flow.component.UI;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
@@ -30,7 +31,8 @@ public class MedicamentosView extends VerticalLayout {
     private MedicamentoService medicamentoService;
     private Grid<Medicamento> grid;
 
-    public MedicamentosView(MedicamentoService medicamentoService) {
+    @SuppressWarnings("unused")
+	public MedicamentosView(MedicamentoService medicamentoService) {
         this.medicamentoService = medicamentoService;
 
         Button agregarMedicamentoButton = new Button("Agregar Medicamento", VaadinIcon.PLUS.create());
