@@ -28,7 +28,6 @@ public class Compra {
   private int cantidad;
   private double precio;
   private double precioUnidad;  
-  private String nombreComercial;
   public Compra() {
     // Default constructor required by JPA
   }
@@ -39,7 +38,6 @@ public class Compra {
     this.precioUnidad = precioUnidad;
     this.precio = cantidad * precioUnidad;
     this.medicamento = medicamento;
-    this.nombreComercial = getNombreComercial();
   }
 
   public Long getId() { 
@@ -84,7 +82,6 @@ public class Compra {
 
   public void setMedicamento(Medicamento medicamento) {
 	    this.medicamento = medicamento;
-	    this.nombreComercial = (medicamento != null) ? medicamento.getNombreComercial() : null;
 	}
 
 
@@ -95,6 +92,11 @@ public String getNombreComercial() {
 public Medicamento getMedicamento() {
 	// TODO Auto-generated method stub
 	return this.medicamento;
+}
+
+public void setPrecioTotal(double precioTotal) {
+	this.precio = precioTotal;
+	
 }
 
 }

@@ -55,7 +55,7 @@ public class CompraView extends VerticalLayout {
 	    });
 	    
 	    
-	    grid.setColumns("id", "medicamentoId", "cantidad", "fechaCompra", "precioUnidad", "precio");
+	    grid.setColumns("id", "medicamento.nombreComercial","fechaCompra",  "cantidad", "precioUnidad", "precio");
 	    Grid.Column<Compra> columnaPdf = grid.addComponentColumn(compra -> {
 	        Button botonPdf = new Button(new Icon(VaadinIcon.FILE_TEXT));
 	        botonPdf.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
@@ -64,31 +64,7 @@ public class CompraView extends VerticalLayout {
 	        botonPdf.getStyle().set("border", "none");
 
 	        botonPdf.addClickListener(event -> {
-	            elemental.json.JsonObject json = Json.createObject();
-	            json.put("id", compra.getId());
-	            json.put("medicamentoId", compra.getMedicamentoId());
-	            json.put("cantidad", compra.getCantidad());
-	            json.put("fechaCompra", compra.getFechaCompra().toString());
 	            
-	            String jsonString = json.toJson();
-	            String escapedJsonString = StringEscapeUtils.escapeEcmaScript(jsonString);
-
-	            String javascript = "const data = '" + escapedJsonString + "';"
-	                    + "const blob = new Blob([data], {type: 'application/json'});"
-	                    + "const url = URL.createObjectURL(blob);"
-	                    + "const a = document.createElement('a');"
-	                    + "a.style.display = 'none';"
-	                    + "a.href = url;"
-	                    + "a.download = 'purchase.json';"
-	                    + "document.body.appendChild(a);"
-	                    + "a.click();"
-	                    + "document.body.removeChild(a);"
-	                    + "URL.revokeObjectURL(url);";
-	            
-	            Element script = new Element("script");
-	            script.setProperty("type", "text/javascript");
-	            script.setProperty("innerHTML", javascript);
-	            botonPdf.getElement().appendChild(script);
 	        });
 
 	        return botonPdf;

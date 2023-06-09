@@ -3,6 +3,7 @@ package es.uca.iw.farmacia.views.caja;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -14,6 +15,7 @@ import com.vaadin.flow.router.RouteAlias;
 
 import es.uca.iw.farmacia.data.entity.Compra;
 import es.uca.iw.farmacia.data.entity.Medicamento;
+import es.uca.iw.farmacia.data.service.CompraService;
 import es.uca.iw.farmacia.data.service.MedicamentoService;
 import es.uca.iw.farmacia.views.MainLayout;
 
@@ -37,10 +39,12 @@ public class CajaView extends VerticalLayout {
     private List<Compra> listaCompras;
     private Binder<Compra> binder;
     private MedicamentoService medicamentoService;
+    private CompraService compraService;
     private double precioTotal;
     private Button precioTotalLabel; // Store the total price label reference
 
-    public CajaView(MedicamentoService medicamentoService) {
+    public CajaView(MedicamentoService medicamentoService, CompraService compraService) {
+    	this.compraService = compraService;
         this.medicamentoService = medicamentoService;
         listaCompras = new ArrayList<>();
         binder = new Binder<>(Compra.class);
@@ -68,7 +72,14 @@ public class CajaView extends VerticalLayout {
         filtroLayout.setAlignSelf(Alignment.END, eliminarButton);
         add(filtroLayout, compraGrid);
 
+        Button finalizarCompraButton = new Button("Finalizar compra");
+        finalizarCompraButton.addClickListener(e -> finalizarCompra());
+        finalizarCompraButton.getStyle().set("background-color", "red");
+        finalizarCompraButton.getStyle().set("color", "white");
+        
+        add(finalizarCompraButton);
         actualizarPrecioTotal(); // Initialize the total price label
+        
     }
 
     private void agregarMedicamento(Medicamento medicamento, Integer cantidad) {
@@ -133,4 +144,47 @@ public class CajaView extends VerticalLayout {
         precioTotalLabel.setText("Precio Total: " + formattedPrecioTotal + "€");
         add(precioTotalLabel);
     }
+
+    private void finalizarCompra() {
+        if (!listaCompras.isEmpty()) {
+            boolean stockSuficiente = true;
+
+            for (Compra compra : listaCompras) {
+                Medicamento medicamento = compra.getMedicamento();
+                int cantidadCompra = compra.getCantidad();
+
+                if (cantidadCompra > medicamento.getStockDisponible()) {
+                    stockSuficiente = false;
+                    break;
+                }
+            }
+
+            if (stockSuficiente) {
+                double precioTotal = listaCompras.stream()
+                        .mapToDouble(compra -> compra.getCantidad() * compra.getPrecioUnidad())
+                        .sum();
+
+                for (Compra compra : listaCompras) {
+                    Medicamento medicamento = compra.getMedicamento();
+                    medicamento.setStockDisponible(medicamento.getStockDisponible() - compra.getCantidad());
+                    medicamentoService.guardarMedicamento(medicamento);
+                    compra.setFechaCompra(new Date());
+                    compra.setPrecioTotal(precioTotal);
+                    compra.setCantidad(compra.getCantidad());
+                    compra.setMedicamento(medicamento);
+                    compraService.guardarCompra(compra);
+                }
+
+                listaCompras.clear(); // Clear the list of purchases
+                actualizarPrecioTotal(); // Reset the total price
+                compraGrid.getDataProvider().refreshAll(); // Refresh the grid
+            } else {
+                // Mostrar un mensaje de error al usuario indicando que no hay suficiente stock disponible
+                // Puedes usar una notificación de Vaadin para esto
+                Notification.show("No hay suficiente stock disponible para completar la compra.", 3000, Notification.Position.MIDDLE);
+            }
+        }
+    }
+
+    
 }
