@@ -1,6 +1,11 @@
 package es.uca.iw.farmacia.views.compras;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -39,43 +44,29 @@ public class CompraView extends VerticalLayout {
 
 	  public CompraView(CompraService compraService) {
 	    this.compraService = compraService;
+	        // ...
 
-	    Grid<Compra> grid = new Grid<>(Compra.class);
-	    grid.setItems(compraService.listarCompras());
+	        Grid<Compra> grid = new Grid<>(Compra.class);
+	        grid.setColumns("id", "medicamento.nombreComercial", "cantidad");
 
-	    Button exportButton = new Button("Exportar a PDF");
-	    exportButton.addClickListener(e -> {
-	      try {
-	        exportarComprasAPDF();
-	        Notification.show("Las compras se han exportado a PDF y se han descargado localmente.");
-	      } catch (IOException ex) {
-	        ex.printStackTrace();
-	        Notification.show("Error al exportar las compras a PDF.");
-	      }
-	    });
-	    
-	    
-	    grid.setColumns("id", "medicamento.nombreComercial","fechaCompra",  "cantidad", "precioUnidad", "precio");
-	    Grid.Column<Compra> columnaPdf = grid.addComponentColumn(compra -> {
-	        Button botonPdf = new Button(new Icon(VaadinIcon.FILE_TEXT));
-	        botonPdf.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SMALL);
-	        botonPdf.getStyle().set("padding", "0");
-	        botonPdf.getStyle().set("background-color", "transparent");
-	        botonPdf.getStyle().set("border", "none");
+	        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
 
-	        botonPdf.addClickListener(event -> {
-	            
-	        });
+	        grid.addColumn(compra -> decimalFormat.format(compra.getPrecioUnidad()) + " €")
+	                .setHeader("Precio Unidad");
 
-	        return botonPdf;
-	    });
-	 
+	        grid.addColumn(compra -> decimalFormat.format(compra.getPrecio()) + " €")
+	                .setHeader("Precio");
 
+	        grid.addColumn(compra -> {
+	            Date fechaCompra = compra.getFechaCompra();
+	            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	            return formatter.format(fechaCompra);
+	        }).setHeader("Fecha Compra");
 
-	    add(grid);
-	  }
+	        grid.setItems(compraService.listarCompras());
 
-	  private void exportarComprasAPDF() throws IOException {
-		 
-		}
+	        add(grid);
+	    }
+
+	
 	}

@@ -58,9 +58,12 @@ public class MedicamentosView extends VerticalLayout {
         // Obtener todos los medicamentos
         List<Medicamento> medicamentos = medicamentoService.obtenerTodosLosMedicamentos();
 
-        // Configurar las columnas del grid
         grid.setColumns("id", "codigoNacional", "nombreComercial", "composicion", "categoria", "formaFarmaceutica",
-                "stockDisponible", "precioPorUnidad");
+                "stockDisponible");
+
+        // Columna para el precio por unidad con la etiqueta "€"
+        grid.addColumn(medicamento -> medicamento.getPrecioPorUnidad() + " €")
+                .setHeader("Precio Unidad");
 
         // Columna para el icono de borrado
         Grid.Column<Medicamento> columnaBorrar = grid.addComponentColumn(medicamento -> {

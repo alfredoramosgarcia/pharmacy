@@ -55,6 +55,8 @@ public class CajaView extends VerticalLayout {
 
         compraGrid = new Grid<>(Compra.class);
         compraGrid.setColumns("nombreComercial", "cantidad", "precioUnidad");
+        compraGrid.addColumn(medicamento -> medicamento.getPrecioUnidad() + " €")
+                .setHeader("Precio Unidad");
         compraGrid.setItems(listaCompras);
 
         ComboBox<Medicamento> medicamentoComboBox = new ComboBox<>("Medicamento");
