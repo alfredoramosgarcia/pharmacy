@@ -66,8 +66,13 @@ public class DetalleMedicamentoView extends VerticalLayout implements HasUrlPara
             return;
         }
 
-        if (stockDisponible < 0 || precioPorUnidad < 0) {
-            mostrarNotificacionError("El Stock Disponible y el Precio por Unidad deben ser mayores o iguales a 0");
+        if (stockDisponible < 0 ) {
+            mostrarNotificacionError("El stock disponible debe ser mayor a 0");
+            return;
+        }
+        
+        if (precioPorUnidad < 0 ) {
+            mostrarNotificacionError("El precio por unidad debe ser mayor a 0");
             return;
         }
 
