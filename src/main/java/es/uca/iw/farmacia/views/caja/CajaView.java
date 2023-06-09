@@ -178,6 +178,7 @@ public class CajaView extends VerticalLayout {
                     compra.setCantidad(compra.getCantidad());
                     compra.setMedicamento(medicamento);
                     compraService.guardarCompra(compra);
+                    mostrarNotificacionError("Compra realizada correctamente");
                 }
 
                 listaCompras.clear(); // Clear the list of purchases
