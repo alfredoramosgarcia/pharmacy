@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import es.uca.iw.farmacia.data.entity.Medicamento;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MedicamentoService {
@@ -26,5 +27,10 @@ public class MedicamentoService {
 
     public void eliminarMedicamento(Long medicamentoId) {
         medicamentoRepository.deleteById(medicamentoId);
+    }
+    
+    public Medicamento obtenerMedicamentoPorId(Long id) {
+        Optional<Medicamento> optionalMedicamento = medicamentoRepository.findById(id);
+        return optionalMedicamento.orElse(null);
     }
 }

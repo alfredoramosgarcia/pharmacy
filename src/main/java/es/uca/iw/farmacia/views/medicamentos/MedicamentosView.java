@@ -1,8 +1,10 @@
 package es.uca.iw.farmacia.views.medicamentos;
 
 import com.vaadin.flow.component.UI;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -15,6 +17,9 @@ import es.uca.iw.farmacia.data.entity.Medicamento;
 import es.uca.iw.farmacia.data.service.MedicamentoService;
 import es.uca.iw.farmacia.views.MainLayout;
 import es.uca.iw.farmacia.views.agregarMedicamento.AgregarMedicamentoView;
+import es.uca.iw.farmacia.views.detalleMedicamento.DetalleMedicamentoView;
+import es.uca.iw.farmacia.views.agregarMedicamento.AgregarMedicamentoView;
+
 import jakarta.annotation.security.PermitAll;
 
 @SuppressWarnings("serial")
@@ -42,7 +47,6 @@ public class MedicamentosView extends VerticalLayout {
 
         // Obtener los medicamentos desde el servicio
         List<Medicamento> medicamentos = medicamentoService.obtenerTodosLosMedicamentos();
-        System.out.print(medicamentos.isEmpty());
 
         // Agregar los medicamentos al grid
         grid.setItems(medicamentos);
@@ -50,8 +54,31 @@ public class MedicamentosView extends VerticalLayout {
         // Configurar las columnas del grid
         grid.setColumns("id", "codigoNacional", "nombreComercial", "composicion", "categoria", "formaFarmaceutica", "stockDisponible", "precioPorUnidad");
 
+     // Columna para el icono de borrado
+        Grid.Column<Medicamento> columnaBorrar = grid.addComponentColumn(medicamento -> {
+            Button botonBorrar = new Button(new Icon(VaadinIcon.TRASH));
+            botonBorrar.addClickListener(event -> {
+                medicamentoService.eliminarMedicamento(medicamento.getId());
+                actualizarGrid();
+            });
+            return botonBorrar;
+        });
+        
+        // Columna para el botón de modificar
+        Grid.Column<Medicamento> columnaModificar = grid.addComponentColumn(medicamento -> {
+            Button botonModificar = new Button(new Icon(VaadinIcon.EDIT));
+            botonModificar.addClickListener(event -> {
+                UI.getCurrent().navigate(DetalleMedicamentoView.class, medicamento.getId());
+            });
+            return botonModificar;
+        });
         // Agregar el grid al layout
         add(agregarMedicamentoButton);
         add(grid);
+    }
+    
+    private void actualizarGrid() {
+        List<Medicamento> medicamentos = medicamentoService.obtenerTodosLosMedicamentos();
+        grid.setItems(medicamentos);
     }
 }

@@ -190,6 +190,9 @@ public class MainLayout extends AppLayout {
                 new MenuItemInfo("Caja", LineAwesomeIcon.BUY_N_LARGE.create(), CajaView.class), //
 
                 new MenuItemInfo("Medicamentos", LineAwesomeIcon.PILLS_SOLID.create(), MedicamentosView.class), //
+                
+                new MenuItemInfo("Compras", new Icon(VaadinIcon.CART), MedicamentosView.class), //
+
 
         };
     }
