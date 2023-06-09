@@ -150,7 +150,8 @@ public class CajaView extends VerticalLayout {
         add(precioTotalLabel);
     }
 
-    private void finalizarCompra() {
+    @SuppressWarnings("unused")
+	private void finalizarCompra() {
         if (!listaCompras.isEmpty()) {
             boolean stockSuficiente = true;
 
