@@ -1,17 +1,20 @@
 package es.uca.iw.farmacia.views.caja;
 
 import com.vaadin.flow.component.button.Button;
-
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 import es.uca.iw.farmacia.data.entity.Medicamento;
+import es.uca.iw.farmacia.data.service.MedicamentoService;
 import es.uca.iw.farmacia.views.MainLayout;
+
 import jakarta.annotation.security.PermitAll;
 
 import java.util.ArrayList;
@@ -27,10 +30,13 @@ public class CajaView extends VerticalLayout {
     private Grid<Medicamento> medicamentoGrid;
     private List<Medicamento> listaCaja;
     private Binder<Medicamento> binder;
+    private MedicamentoService medicamentoService;
+    private double precioTotal;
 
     public CajaView() {
         listaCaja = new ArrayList<>();
         binder = new Binder<>(Medicamento.class);
+        precioTotal = 0.0; // Inicializar el precio total en 0.0
 
         medicamentoGrid = new Grid<>(Medicamento.class);
         medicamentoGrid.setColumns("codigoNacional", "nombreComercial", "composicion", "categoria", "formaFarmaceutica", "stockDisponible" , "precioPorUnidad");
@@ -50,7 +56,7 @@ public class CajaView extends VerticalLayout {
             medicamentoCaja.setStockDisponible(cantidad);
             listaCaja.add(medicamentoCaja);
             actualizarStockMedicamento(medicamentoSeleccionado, cantidad);
-            actualizarPrecioFinal();
+            actualizarPrecioTotal(); // Actualizar el precio total
             medicamentoGrid.getDataProvider().refreshAll();
         }
     }
@@ -59,8 +65,14 @@ public class CajaView extends VerticalLayout {
         medicamento.setStockDisponible(medicamento.getStockDisponible() - cantidad);
     }
 
-    private void actualizarPrecioFinal() {
-        // Calcular el precio final sumando el precio de cada medicamento en la lista de la caja
-        // y realizar cualquier otra lógica necesaria
+    private void actualizarPrecioTotal() {
+        precioTotal = listaCaja.stream()
+                .mapToDouble(medicamento -> medicamento.getPrecioPorUnidad() * medicamento.getStockDisponible())
+                .sum();
+        Button precioTotalLabel = null;
+		// Actualizar la visualización del precio total en la interfaz de usuario
+        // (puede ser un componente Label o cualquier otro)
+        // por ejemplo:
+        precioTotalLabel.setText("Precio Total: " + precioTotal + "€");
     }
 }
