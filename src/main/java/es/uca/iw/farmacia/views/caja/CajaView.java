@@ -45,15 +45,54 @@ public class CajaView extends VerticalLayout {
     private Button precioTotalLabel; 
 
     public CajaView(MedicamentoService medicamentoService, CompraService compraService) {
-    	this.compraService = compraService;
+        this.compraService = compraService;
         this.medicamentoService = medicamentoService;
         listaCompras = new ArrayList<>();
-        precioTotal = 0.0; 
+        precioTotal = 0.0;
 
         compraGrid = new Grid<>(Compra.class);
-        compraGrid.setColumns("nombreComercial", "cantidad");
+        compraGrid.setColumns("nombreComercial");
         compraGrid.addColumn(medicamento -> medicamento.getPrecioUnidad() + " €")
                 .setHeader("Precio Unidad");
+
+        // Columna modificable de cantidad
+     // Columna modificable de cantidad
+        Grid.Column<Compra> cantidadColumn = compraGrid.addComponentColumn(compra -> {
+            IntegerField cantidadField = new IntegerField();
+            cantidadField.setValue(compra.getCantidad());
+            cantidadField.addValueChangeListener(event -> {
+                int nuevaCantidad = event.getValue();
+                compra.setCantidad(nuevaCantidad);
+                actualizarPrecioTotal();
+            });
+
+            Button botonIncrementar = new Button("+");
+            Button botonDecrementar = new Button("-");
+            
+            HorizontalLayout botonesLayout = new HorizontalLayout(botonIncrementar, botonDecrementar);
+            botonesLayout.setAlignItems(Alignment.END);
+            
+            botonIncrementar.addClickListener(event -> {
+                int cantidadActual = cantidadField.getValue();
+                cantidadField.setValue(cantidadActual + 1);
+            });
+            
+            botonDecrementar.addClickListener(event -> {
+                int cantidadActual = cantidadField.getValue();
+                if (cantidadActual > 0) {
+                    cantidadField.setValue(cantidadActual - 1);
+                }
+            });
+
+            HorizontalLayout cantidadLayout = new HorizontalLayout(cantidadField, botonesLayout);
+            cantidadLayout.setJustifyContentMode(JustifyContentMode.END);
+            cantidadLayout.getStyle().set("max-height", "50px");
+
+            return cantidadLayout;
+        }).setHeader("Cantidad");
+
+
+
         compraGrid.setItems(listaCompras);
 
         ComboBox<Medicamento> medicamentoComboBox = new ComboBox<>("Medicamento");
@@ -73,17 +112,16 @@ public class CajaView extends VerticalLayout {
         filtroLayout.setAlignSelf(Alignment.END, cantidadField);
         filtroLayout.setAlignSelf(Alignment.END, agregarButton);
         filtroLayout.setAlignSelf(Alignment.END, eliminarButton);
-        add(filtroLayout, compraGrid);
 
         Button finalizarCompraButton = new Button("Finalizar compra");
         finalizarCompraButton.addClickListener(e -> finalizarCompra());
         finalizarCompraButton.getStyle().set("background-color", "red");
         finalizarCompraButton.getStyle().set("color", "white");
-        
-        add(finalizarCompraButton);
-        actualizarPrecioTotal(); 
-        
+
+        add(filtroLayout, compraGrid, finalizarCompraButton);
+        actualizarPrecioTotal();
     }
+
 
     private void agregarMedicamento(Medicamento medicamento, Integer cantidad) {
         if (medicamento != null && cantidad != null && cantidad > 0) {

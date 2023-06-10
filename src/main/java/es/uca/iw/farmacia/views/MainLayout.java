@@ -113,7 +113,7 @@ public class MainLayout extends AppLayout {
         b.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         b.getStyle().set("margin-right", "570px"); // Establece un margen izquierdo de 20px
         b.addClickListener(e -> {
-        	 UI.getCurrent().navigate("/");
+        	 UI.getCurrent().navigate("/caja");
         });
         
         layout.add(b);
