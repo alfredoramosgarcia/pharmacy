@@ -91,7 +91,7 @@ public class RegistrarLotesView extends VerticalLayout {
         
         opcion1Button = new Button("Registro");
         
-        opcion1Button.addThemeVariants(ButtonVariant.LUMO_PRIMARY); // Opción 1 seleccionada por defecto
+        //opcion1Button.addThemeVariants(ButtonVariant.LUMO_PRIMARY); // Opción 1 seleccionada por defecto
         opcion1Button.getStyle().set("margin-right", "10px"); // Agregar margen derecho
         opcion1Button.getStyle().set("box-shadow", "none"); // Quitar contorno
 
@@ -99,14 +99,16 @@ public class RegistrarLotesView extends VerticalLayout {
        
         opcion2Button.getStyle().set("margin-left", "10px"); // Agregar margen izquierdo
         opcion2Button.getStyle().set("box-shadow", "none"); // Quitar contorno
-
+        opcion2Button.addThemeVariants(ButtonVariant.LUMO_PRIMARY); // Opción 1 seleccionada por defecto
         header.add(opcion1Button, opcion2Button);
         add(header);
         
+        historialLotes();
         opcion1Button.addClickListener(event -> {
             opcion1Button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             opcion2Button.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            registroLotes();
+            add(registroLote);
+            remove(grid);
             
             
         });
@@ -114,7 +116,7 @@ public class RegistrarLotesView extends VerticalLayout {
         opcion2Button.addClickListener(event -> {
             opcion2Button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             opcion1Button.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
-          
+            remove(registroLote);
             historialLotes();
             
         });
@@ -136,63 +138,7 @@ public class RegistrarLotesView extends VerticalLayout {
     
     private void registroLotes() {
     	 
-    	
-    	 this.loteService = loteService;
-         this.medicamentoService = medicamentoService;
-         this.historialLotes = historialLotes;
-
-    
-        
-         FormLayout formLayout = new FormLayout();
-         formLayout.setVisible(false);
-         ComboBox<Medicamento> medicamentoComboBox = new ComboBox<>("Medicamento");
-         medicamentoComboBox.setItemLabelGenerator(Medicamento::getNombreComercial);
-         medicamentoComboBox.setItems(medicamentoService.obtenerTodosLosMedicamentos());
-         formLayout.add(medicamentoComboBox);
-
-         TextField distribuidorField = new TextField("Distribuidor");
-         distribuidorField.setRequired(true);
-         formLayout.add(distribuidorField);
-
-         IntegerField cantidadField = new IntegerField("Cantidad");
-         cantidadField.setRequired(true);
-         formLayout.add(cantidadField);
-
-         Button guardarButton = new Button("Guardar");
-         guardarButton.addClickListener(event -> {
-         	Medicamento medicamentoS = medicamentoComboBox.getValue();
-             String medicamentoSeleccionado = medicamentoS.getNombreComercial();
-             String distribuidor = distribuidorField.getValue();
-             int cantidad = cantidadField.getValue();
-
-             if (medicamentoSeleccionado != null && distribuidor != null && !distribuidor.isEmpty() && cantidad > 0) {
-                 // Obtener el medicamento seleccionado por su nombre
-                 Medicamento medicamento = medicamentoService.obtenerMedicamentoPorNombre(medicamentoSeleccionado);
-                 if (medicamento != null) {
-                     // Crear el objeto Lote con los datos ingresados
-                     Lotes lote = new Lotes();
-                     lote.setMedicamento(medicamento.getNombreComercial());
-                     lote.setDistribuidor(distribuidor);
-                     lote.setCantidad(cantidad);
-
-                     // Guardar el lote utilizando el servicio
-                     loteService.guardarLote(lote);
-                     medicamento.setStockDisponible(medicamento.getStockDisponible() + cantidad);
-                     medicamentoService.guardarMedicamento(medicamento);
-                   
-
-                     Notification.show("Lote registrado correctamente", 3000, Notification.Position.MIDDLE);
-                 } else {
-                     Notification.show("El medicamento seleccionado no existe", 3000, Notification.Position.MIDDLE);
-                 }
-             } else {
-                 Notification.show("Completa todos los campos correctamente", 3000, Notification.Position.MIDDLE);
-             }
-         });
-         formLayout.add(guardarButton);
-
-         add(formLayout);
-         remove(grid);
+         
     }
     
 }
