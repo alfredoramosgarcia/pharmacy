@@ -41,7 +41,6 @@ public class MedicamentosView extends VerticalLayout {
             UI.getCurrent().navigate(AgregarMedicamentoView.class);
         });
 
-        // Campo de texto para buscar por nombre
         TextField buscarField = new TextField("Buscar por nombre");
         Button buscarButton = new Button("Buscar", VaadinIcon.SEARCH.create());
         buscarButton.addClickListener(e -> {
@@ -50,25 +49,18 @@ public class MedicamentosView extends VerticalLayout {
             grid.setItems(medicamentosFiltrados);
         });
 
-        // Layout para el campo de búsqueda
         HorizontalLayout filtroLayout = new HorizontalLayout(buscarField, buscarButton);
         filtroLayout.setVerticalComponentAlignment(Alignment.END, buscarButton);
         filtroLayout.setAlignSelf(Alignment.END, buscarButton);
 
-        // Crear un grid para mostrar los medicamentos
         grid = new Grid<>(Medicamento.class);
-
-        // Obtener todos los medicamentos
         List<Medicamento> medicamentos = medicamentoService.obtenerTodosLosMedicamentos();
 
         grid.setColumns("id", "codigoNacional", "nombreComercial", "composicion", "categoria", "formaFarmaceutica",
                 "stockDisponible");
 
-        // Columna para el precio por unidad con la etiqueta "€"
         grid.addColumn(medicamento -> medicamento.getPrecioPorUnidad() + " €")
                 .setHeader("Precio Unidad");
-
-        // Columna para el icono de borrado
         Grid.Column<Medicamento> columnaBorrar = grid.addComponentColumn(medicamento -> {
             Button botonBorrar = new Button(new Icon(VaadinIcon.TRASH));
             botonBorrar.addClickListener(event -> {
@@ -78,7 +70,6 @@ public class MedicamentosView extends VerticalLayout {
             return botonBorrar;
         });
 
-        // Columna para el botón de modificar
         Grid.Column<Medicamento> columnaModificar = grid.addComponentColumn(medicamento -> {
             Button botonModificar = new Button(new Icon(VaadinIcon.EDIT));
             botonModificar.addClickListener(event -> {
@@ -86,11 +77,7 @@ public class MedicamentosView extends VerticalLayout {
             });
             return botonModificar;
         });
-
-        // Agregar los componentes al layout principal
         add(filtroLayout, grid, agregarMedicamentoButton);
-
-        // Actualizar el contenido del grid
         actualizarGrid();
     }
 

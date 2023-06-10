@@ -24,9 +24,6 @@ import jakarta.annotation.security.PermitAll;
 @PermitAll
 public class AgregarMedicamentoView extends FormLayout {
 
-    /**
-	 * 
-	 */
 	private final TextField codigoNacional = new TextField("Código Nacional");
     private final TextField nombreComercial = new TextField("Nombre Comercial");
     private final TextField composicion = new TextField("Composición");
@@ -61,13 +58,10 @@ public class AgregarMedicamentoView extends FormLayout {
 
                 UI currentUI = UI.getCurrent();
                 if (currentUI != null) {
-                    // Navegar a la vista "/medicamentos"
                     currentUI.navigate("medicamentos");}
             } catch (ValidationException ex) {
                 Notification.show("Error al guardar el medicamento. Verifique los datos ingresados.", 3000, Notification.Position.MIDDLE);
             }
         });
-
     }
-
 }

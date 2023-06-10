@@ -94,7 +94,6 @@ public class DetalleMedicamentoView extends VerticalLayout implements HasUrlPara
         dialog.open();
     }
 
-    
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long id) {
         if (id == null) {
@@ -111,9 +110,7 @@ public class DetalleMedicamentoView extends VerticalLayout implements HasUrlPara
                 composicionField.setValue(medicamento.getComposicion());
                 categoriaField.setValue(medicamento.getCategoria());
                 stockDisponibleField.setValue(String.valueOf(medicamento.getStockDisponible()));
-                precioUnidadField.setValue(String.valueOf(medicamento.getPrecioPorUnidad()));
-                
-            
+                precioUnidadField.setValue(String.valueOf(medicamento.getPrecioPorUnidad()));            
             }
         }
     }

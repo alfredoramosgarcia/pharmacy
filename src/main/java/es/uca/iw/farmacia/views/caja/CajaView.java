@@ -42,13 +42,13 @@ public class CajaView extends VerticalLayout {
     private MedicamentoService medicamentoService;
     private CompraService compraService;
     private double precioTotal;
-    private Button precioTotalLabel; // Store the total price label reference
+    private Button precioTotalLabel; 
 
     public CajaView(MedicamentoService medicamentoService, CompraService compraService) {
     	this.compraService = compraService;
         this.medicamentoService = medicamentoService;
         listaCompras = new ArrayList<>();
-        precioTotal = 0.0; // Initialize the total price to 0.0
+        precioTotal = 0.0; 
 
         compraGrid = new Grid<>(Compra.class);
         compraGrid.setColumns("nombreComercial", "cantidad");
@@ -81,7 +81,7 @@ public class CajaView extends VerticalLayout {
         finalizarCompraButton.getStyle().set("color", "white");
         
         add(finalizarCompraButton);
-        actualizarPrecioTotal(); // Initialize the total price label
+        actualizarPrecioTotal(); 
         
     }
 
@@ -106,14 +106,13 @@ public class CajaView extends VerticalLayout {
             if(cantidad <= medicamento.getStockDisponible()) actualizarStockMedicamento(medicamento, cantidad);
             else { mostrarNotificacionError("No hay stock suficiente para la compra");
             return;}
-            actualizarPrecioTotal(); // Update the total price
+            actualizarPrecioTotal(); 
             compraGrid.getDataProvider().refreshAll();
         }
     }
     
     private void actualizarStockMedicamento(Medicamento medicamento, Integer cantidad) {
         medicamento.setStockDisponible(medicamento.getStockDisponible() - cantidad);
-        // Update the medication's stock in the database using the service
         medicamentoService.guardarMedicamento(medicamento);
     }
 
@@ -122,7 +121,7 @@ public class CajaView extends VerticalLayout {
         if (selectedCompra != null) {
             listaCompras.remove(selectedCompra);
             actualizarStockMedicamento(selectedCompra.getMedicamento(), -selectedCompra.getCantidad());
-            actualizarPrecioTotal(); // Update the total price
+            actualizarPrecioTotal(); 
             compraGrid.getDataProvider().refreshAll();
         }
     }
@@ -132,19 +131,16 @@ public class CajaView extends VerticalLayout {
                 .mapToDouble(compra -> compra.getCantidad() * compra.getPrecioUnidad())
                 .sum();
 
-        // Format the price value
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
         symbols.setDecimalSeparator(',');
         symbols.setGroupingSeparator('.');
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00", symbols);
         String formattedPrecioTotal = decimalFormat.format(precioTotal);
 
-        // Remove the previous total price label if it exists
         if (precioTotalLabel != null) {
             remove(precioTotalLabel);
         }
 
-        // Create a new total price label with the updated value
         precioTotalLabel = new Button();
         precioTotalLabel.setText("Precio Total: " + formattedPrecioTotal + "€");
         add(precioTotalLabel);
@@ -169,7 +165,6 @@ public class CajaView extends VerticalLayout {
                 double precioTotal = listaCompras.stream()
                         .mapToDouble(compra -> compra.getCantidad() * compra.getPrecioUnidad())
                         .sum();
-             // Create a dialog to confirm the purchase
                 Dialog dialog = new Dialog();
                 dialog.setCloseOnEsc(false);
                 dialog.setCloseOnOutsideClick(false);
@@ -191,7 +186,7 @@ public class CajaView extends VerticalLayout {
                     }
 
                     listaCompras.clear();
-                    actualizarPrecioTotal(); // Reset the total price
+                    actualizarPrecioTotal(); 
                     compraGrid.getDataProvider().refreshAll();
 
                     dialog.close();
@@ -218,9 +213,9 @@ public class CajaView extends VerticalLayout {
                     compraService.guardarCompra(compra);
                 }
 
-                listaCompras.clear(); // Clear the list of purchases
-                actualizarPrecioTotal(); // Reset the total price
-                compraGrid.getDataProvider().refreshAll(); // Refresh the grid
+                listaCompras.clear(); 
+                actualizarPrecioTotal(); 
+                compraGrid.getDataProvider().refreshAll();
             }
     }
     
@@ -232,8 +227,5 @@ public class CajaView extends VerticalLayout {
 
     private void mostrarNotificacionExito(String mensaje) {
         Notification.show(mensaje, 3000, Notification.Position.MIDDLE);
-    }
-
-    
-    
+    }  
 }

@@ -40,7 +40,6 @@ public class MedicamentoService {
     }
 
     public Medicamento obtenerMedicamentoPorNombre(String medicamentoSeleccionado) {
-        return medicamentoRepository.findByNombreComercial(medicamentoSeleccionado);
-      
+        return medicamentoRepository.findByNombreComercial(medicamentoSeleccionado);     
     }
 }

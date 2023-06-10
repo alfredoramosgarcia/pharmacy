@@ -1,6 +1,5 @@
 package es.uca.iw.farmacia.views.compras;
 
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -13,7 +12,6 @@ import es.uca.iw.farmacia.data.service.CompraService;
 import es.uca.iw.farmacia.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
 
-
 @SuppressWarnings("serial")
 @PageTitle("FARMACIA")
 @Route(value = "compras", layout = MainLayout.class)
@@ -24,8 +22,7 @@ public class CompraView extends VerticalLayout {
 
 	  public CompraView(CompraService compraService) {
 	    this.compraService = compraService;
-	        // ...
-
+	  
 	        Grid<Compra> grid = new Grid<>(Compra.class);
 	        grid.setColumns("id", "medicamento.nombreComercial", "cantidad");
 
@@ -47,6 +44,4 @@ public class CompraView extends VerticalLayout {
 
 	        add(grid);
 	    }
-
-	
 	}
