@@ -38,4 +38,9 @@ public class MedicamentoService {
     public List<Medicamento> buscarPorNombre(String nombre) {
         return medicamentoRepository.findByNombreComercialContainingIgnoreCase(nombre);
     }
+
+    public Medicamento obtenerMedicamentoPorNombre(String medicamentoSeleccionado) {
+        return medicamentoRepository.findByNombreComercial(medicamentoSeleccionado);
+      
+    }
 }

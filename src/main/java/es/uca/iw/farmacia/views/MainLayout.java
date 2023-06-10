@@ -46,6 +46,8 @@ import es.uca.iw.farmacia.security.AuthenticatedUser;
 import es.uca.iw.farmacia.views.caja.CajaView;
 import es.uca.iw.farmacia.views.compras.CompraView;
 import es.uca.iw.farmacia.views.medicamentos.MedicamentosView;
+import es.uca.iw.farmacia.views.registrarLotes.RegistrarLotesView;
+
 import java.io.ByteArrayInputStream;
 import java.util.Optional;
 import org.vaadin.lineawesome.LineAwesomeIcon;
@@ -177,7 +179,9 @@ public class MainLayout extends AppLayout {
                 new MenuItemInfo("Medicamentos", LineAwesomeIcon.PILLS_SOLID.create(), MedicamentosView.class), //
                 
                 new MenuItemInfo("Compras", new Icon(VaadinIcon.CART), CompraView.class), //
-
+                
+                
+                new MenuItemInfo("Registrar lotes", new Icon(VaadinIcon.FILE_TEXT), RegistrarLotesView.class), //
 
         };
     }
