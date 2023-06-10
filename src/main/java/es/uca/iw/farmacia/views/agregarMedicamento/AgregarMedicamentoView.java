@@ -1,8 +1,6 @@
 package es.uca.iw.farmacia.views.agregarMedicamento;
 
 import com.vaadin.flow.component.UI;
-
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
@@ -24,7 +22,7 @@ import jakarta.annotation.security.PermitAll;
 @PermitAll
 public class AgregarMedicamentoView extends FormLayout {
 
-	private final TextField codigoNacional = new TextField("Código Nacional");
+    private final TextField codigoNacional = new TextField("Código Nacional");
     private final TextField nombreComercial = new TextField("Nombre Comercial");
     private final TextField composicion = new TextField("Composición");
     private final TextField categoria = new TextField("Categoría");
@@ -58,7 +56,8 @@ public class AgregarMedicamentoView extends FormLayout {
 
                 UI currentUI = UI.getCurrent();
                 if (currentUI != null) {
-                    currentUI.navigate("medicamentos");}
+                    currentUI.navigate("medicamentos");
+                }
             } catch (ValidationException ex) {
                 Notification.show("Error al guardar el medicamento. Verifique los datos ingresados.", 3000, Notification.Position.MIDDLE);
             }
